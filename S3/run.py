@@ -17,8 +17,12 @@ def main(args):
         with open(args.input_jsonl, 'r') as f:
             for line in f:
                 instance = json.loads(line)
-                summary = instance['summary']
-                references = instance['references']
+                # The input summaries to S3 are lists of sentences. The example
+                # just passes the whole text in as 1 sentence without pre-sentence tokenizing
+                # it, so we will do the same. But the input summaries are expected
+                # to just be 1 string each, so we wrap them in an extra list
+                summary = [instance['summary']]
+                references = [[reference] for reference in instance['references']]
                 pyr, resp = S3.S3(references, summary, word_embs, model_folder)
                 out.write(json.dumps({
                     'pyr': pyr,
