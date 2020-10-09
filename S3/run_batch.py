@@ -1,6 +1,5 @@
 import argparse
 import json
-import os
 
 import S3
 import word_embeddings
@@ -25,9 +24,6 @@ def main(args):
 
     scores_pyr, scores_resp = S3.S3_batch(references_list, system_summaries, word_embs, model_folder)
 
-    dirname = os.path.dirname(args.output_jsonl)
-    if dirname:
-        os.makedirs(dirname, exist_ok=True)
     with open(args.output_jsonl, 'w') as out:
         for pyr, resp in zip(scores_pyr, scores_resp):
             out.write(json.dumps({

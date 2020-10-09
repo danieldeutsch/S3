@@ -1,6 +1,5 @@
 import argparse
 import json
-import os
 
 import S3
 import word_embeddings
@@ -8,10 +7,6 @@ import word_embeddings
 
 def main(args):
     word_embs = word_embeddings.load_embeddings(args.embs_path)
-
-    dirname = os.path.dirname(args.output_jsonl)
-    if dirname:
-        os.makedirs(dirname, exist_ok=True)
 
     with open(args.output_jsonl, 'w') as out:
         with open(args.input_jsonl, 'r') as f:
