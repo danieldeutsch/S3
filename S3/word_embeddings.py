@@ -3,14 +3,14 @@
 
 import numpy as np
 import os
-import gzip
+import bz2
 
 def _convert_to_numpy(vector):
     return np.array([float(x) for x in vector])
 
 def load_embeddings(filepath):
     dict_embedding = {}
-    with gzip.open(filepath, 'r') as f:
+    with bz2.BZ2File(filepath, 'r') as f:
         for line in f:
             line = line.rstrip().split(" ")
             key = line[0]
