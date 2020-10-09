@@ -9,12 +9,12 @@ import numpy as np
 
 def extract_feature(references, summary_text, word_embs):
 	features = {}
-	
+
 	### Get ROUGE-1, ROUGE-2, ROUGE-3 and ROUGE-L both Recall and Precision
 	features["ROUGE_1_R"] = ROUGE.rouge_n(summary_text, references, 1, 0.)
 	features["ROUGE_2_R"] = ROUGE.rouge_n(summary_text, references, 2, 0.)
 
-	### Get JS 
+	### Get JS
 	features["JS_eval_1"] = JS_eval.JS_eval(summary_text, references, 1)
 	features["JS_eval_2"] = JS_eval.JS_eval(summary_text, references, 2)
 
@@ -52,3 +52,24 @@ def S3(references, system_summary, word_embs, model_folder):
 	score_resp = model_resp.predict(X)[0]
 
 	return (score_pyr, score_resp)
+
+
+def S3_batch(references_list, system_summaries, word_embs, model_folder):
+	instances = [extract_feature(references, system_summary, word_embs) for references, system_summary in zip(references_list, system_summaries)]
+	features_list = [sorted([f for f in instance.keys()]) for instance in instances]
+
+	feature_vectors = []
+	for instance, features in zip(instances, features_list):
+		feature_vector = []
+		for feat in features:
+			feature_vector.append(instance[feat])
+		feature_vectors.append(feature_vector)
+
+	model_pyr = load_model(model_folder, 'pyr')
+	model_resp = load_model(model_folder, 'resp')
+
+	X = np.array(feature_vectors)
+	scores_pyr = model_pyr.predict(X)
+	scores_resp = model_resp.predict(X)
+
+	return (scores_pyr, scores_resp)
