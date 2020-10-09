@@ -22,7 +22,7 @@ def main(args):
             system_summaries.append(summary)
             references_list.append(references)
 
-    scores_pyr, scores_resp = S3.S3_batch(references_list, system_summaries, word_embs, model_folder)
+    scores_pyr, scores_resp = S3.S3_batch(references_list, system_summaries, word_embs, args.model_folder)
 
     with open(args.output_jsonl, 'w') as out:
         for pyr, resp in zip(scores_pyr, scores_resp):

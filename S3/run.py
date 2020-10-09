@@ -18,7 +18,7 @@ def main(args):
                 # to just be 1 string each, so we wrap them in an extra list
                 summary = [instance['summary']]
                 references = [[reference] for reference in instance['references']]
-                pyr, resp = S3.S3(references, summary, word_embs, model_folder)
+                pyr, resp = S3.S3(references, summary, word_embs, args.model_folder)
                 out.write(json.dumps({
                     'pyr': pyr,
                     'resp': resp
